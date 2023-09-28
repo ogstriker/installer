@@ -30,7 +30,7 @@ HOSTNAME='strikerhost'
 ROOT_PASSWORD=''
 
 # Main user to create (by default, added to wheel group, and others).
-USER_NAME='striker3'
+USER_NAME='striker'
 
 # The main user's password (leave blank to be prompted).
 USER_PASSWORD=''

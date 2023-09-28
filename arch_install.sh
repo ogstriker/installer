@@ -30,7 +30,7 @@ HOSTNAME='strikerhost'
 ROOT_PASSWORD=''
 
 # Main user to create (by default, added to wheel group, and others).
-USER_NAME='striker'
+USER_NAME='striker3'
 
 # The main user's password (leave blank to be prompted).
 USER_PASSWORD=''
@@ -84,17 +84,14 @@ configure() {
     echo 'Installing additional packages'
     install_packages
 
-    echo 'Installing packer'
-    install_packer
-
-    echo 'Installing AUR packages'
-    install_aur_packages
+#    echo 'Installing AUR packages'
+#    install_aur_packages
 
     echo 'Clearing package tarballs'
     clean_packages
 
-    echo 'Updating pkgfile database'
-    update_pkgfile
+#    echo 'Updating pkgfile database'
+#    update_pkgfile
 
     echo 'Setting hostname'
     set_hostname "$HOSTNAME"
@@ -111,26 +108,29 @@ configure() {
     echo 'Setting hosts file'
     set_hosts "$HOSTNAME"
 
-    echo 'Setting fstab'
-    set_fstab "$TMP_ON_TMPFS" "$boot_dev"
+#    echo 'Setting fstab'
+#    set_fstab "$TMP_ON_TMPFS" "$boot_dev"
 
-    echo 'Setting initial modules to load'
-    set_modules_load
+#    echo 'Setting initial modules to load'
+#    set_modules_load
 
-    echo 'Configuring initial ramdisk'
-    set_initcpio
+    echo 'Configuring bootloader'
+    grub_bootloader
 
-    echo 'Setting initial daemons'
-    set_daemons "$TMP_ON_TMPFS"
+#    echo 'Configuring initial ramdisk'
+#    set_initcpio
+
+#    echo 'Setting initial daemons'
+#    set_daemons "$TMP_ON_TMPFS"
 
     echo 'Configuring sudo'
     set_sudoers
 
-    if [ -n "$WIRELESS_DEVICE" ]
-    then
-        echo 'Configuring netcfg'
-        set_netcfg
-    fi
+#    if [ -n "$WIRELESS_DEVICE" ]
+#    then
+#        echo 'Configuring netcfg'
+#        set_netcfg
+#    fi
 
     if [ -z "$ROOT_PASSWORD" ]
     then
@@ -152,8 +152,8 @@ configure() {
     echo 'Creating initial user'
     create_user "$USER_NAME" "$USER_PASSWORD"
 
-    echo 'Building locate database'
-    update_locate
+#    echo 'Building locate database'
+#    update_locate
 
     rm /setup.sh
 }
@@ -171,29 +171,32 @@ unmount_filesystems() {
 
 install_packages() {
     local packages=''
-
+#
     # General utilities/libraries
-    packages+=' alsa-utils aspell-en chromium cpupower gvim mlocate net-tools ntp openssh p7zip pkgfile powertop python3 rfkill rsync sudo unrar unzip wget zip systemd-sysvcompat zsh'
+#    packages+=' alsa-utils aspell-en chromium cpupower gvim mlocate net-tools ntp openssh p7zip pkgfile powertop python3 rfkill rsync sudo unrar unzip wget zip systemd-sysvcompat zsh'
 
 # DPS CONFIGURAR O OH-MY-ZSH
 
     # Development packages
-    packages+=' cmake gdb git maven tcpdump valgrind wireshark-gtk'
+#    packages+=' cmake gdb git maven tcpdump '
 
     # Netcfg
     if [ -n "$WIRELESS_DEVICE" ]
     then
-        packages+=' netcfg ifplugd dialog wireless_tools wpa_actiond wpa_supplicant'
+        packages+='dialog wireless_tools wpa_supplicant'
     fi
 
     # Java stuff
     packages+=' jdk17-openjdk jre17-openjdk'
 
     # Libreoffice
-    packages+=' libreoffice-calc libreoffice-en-US libreoffice-gnome libreoffice-impress libreoffice-writer hunspell-en hyphen-en mythes-en'
+#    packages+=' libreoffice-calc libreoffice-en-US'
 
     # Misc programs
-    packages+=' vlc gparted'
+    packages+=' firefox vlc gparted wget jdk8-openjdk unrar qemu-desktop virt-manager zenity steam zsh qbittorrent htop python-pip corectrl spotify intellij-idea-community-edition ncdu discord firejail telegram-desktop ntfs-3g windscribe-bin noto-fonts-emoji minecraft-launcher bash-completion kdenlive'
+
+    # Plasma Desktop
+    packages+=' plasma plasma-wayland-session packagekit-qt5'
 
     # Xserver
     packages+=' xorg-apps xorg-server xorg-xinit xterm'
@@ -202,7 +205,7 @@ install_packages() {
     packages+=' sddm'
 
     # Fonts
-    packages+=' ttf-dejavu ttf-liberation'
+    packages+=' ttf-dejavu ttf-liberation noto-fonts-emoji'
 
     # For laptops
     packages+=' xf86-input-synaptics'
@@ -210,50 +213,42 @@ install_packages() {
     # Extra packages for tc4200 tablet
     #packages+=' ipw2200-fw xf86-input-wacom'
 
-    if [ "$VIDEO_DRIVER" = "i915" ]
-    then
-        packages+=' xf86-video-intel libva-intel-driver'
-    elif [ "$VIDEO_DRIVER" = "nouveau" ]
-    then
-        packages+=' xf86-video-nouveau'
-    elif [ "$VIDEO_DRIVER" = "radeon" ]
-    then
-        packages+=' xf86-video-ati'
-    elif [ "$VIDEO_DRIVER" = "vesa" ]
-    then
-        packages+=' xf86-video-vesa'
-    fi
-
     pacman -Sy --noconfirm $packages
 }
 
-install_packer() {
-    mkdir /foo
-    cd /foo
-    curl https://aur.archlinux.org/yay.git
-    cd packer
-    makepkg -si --noconfirm --asroot
+#install_yay() {
+ #   mkdir -p /foo
+#    cd /foo
+#    git clone https://aur.archlinux.org/yay.git
+#    cd yay
+#    makepkg -si --noconfirm
+#
+#    cd /
+#    rm -rf /foo
+#}
 
-    cd /
-    rm -rf /foo
-}
-
-install_aur_packages() {
-    mkdir /foo
-    export TMPDIR=/foo
-    packer -S --noconfirm lightly-git
-    packer -S --noconfirm q4wine-git
-    packer -S --noconfirm appimagelauncher
-    unset TMPDIR
-    rm -rf /foo
-}
+#install_aur_packages() {
+#    mkdir /foo
+#    export TMPDIR=/foo
+#    yay -S --noconfirm lightly-git
+#    yay -S --noconfirm q4wine-git
+#    yay -S --noconfirm appimagelauncher
+#    unset TMPDIR
+#    rm -rf /foo
+#}
 
 clean_packages() {
     yes | pacman -Scc
 }
 
-update_pkgfile() {
-    pkgfile -u
+#update_pkgfile() {
+#    pkgfile -u
+#}
+
+grub_bootloader() {
+    grub-install --target=x86_64-efi --bootloader-id="Striker's Arch Linux" --recheck
+
+    grub-mkconfig -o /boot/grub/grub.cfg
 }
 
 set_hostname() {
@@ -265,7 +260,7 @@ set_hostname() {
 set_timezone() {
     local timezone="$1"; shift
 
-    ln -sT "/usr/share/zoneinfo/$TIMEZONE" /etc/localtime
+    ln -sTf "/usr/share/zoneinfo/$TIMEZONE" /etc/localtime
 }
 
 set_locale() {
@@ -291,106 +286,6 @@ EOF
 set_fstab() {
 genfstab -U /mnt
 
-}
-
-set_initcpio() {
-    local vid
-
-    if [ "$VIDEO_DRIVER" = "i915" ]
-    then
-        vid='i915'
-    elif [ "$VIDEO_DRIVER" = "nouveau" ]
-    then
-        vid='nouveau'
-    elif [ "$VIDEO_DRIVER" = "radeon" ]
-    then
-        vid='radeon'
-    fi
-
-    local encrypt=""
-    if [ -n "$ENCRYPT_DRIVE" ]
-    then
-        encrypt="encrypt"
-    fi
-
-
-    # Set MODULES with your video driver
-    cat > /etc/mkinitcpio.conf <<EOF
-# vim:set ft=sh
-# MODULES
-# The following modules are loaded before any boot hooks are
-# run.  Advanced users may wish to specify all system modules
-# in this array.  For instance:
-#     MODULES="piix ide_disk reiserfs"
-MODULES="ext4 $vid"
-
-# BINARIES
-# This setting includes any additional binaries a given user may
-# wish into the CPIO image.  This is run last, so it may be used to
-# override the actual binaries included by a given hook
-# BINARIES are dependency parsed, so you may safely ignore libraries
-BINARIES=""
-
-# FILES
-# This setting is similar to BINARIES above, however, files are added
-# as-is and are not parsed in any way.  This is useful for config files.
-# Some users may wish to include modprobe.conf for custom module options
-# like so:
-#    FILES="/etc/modprobe.d/modprobe.conf"
-FILES=""
-
-# HOOKS
-# This is the most important setting in this file.  The HOOKS control the
-# modules and scripts added to the image, and what happens at boot time.
-# Order is important, and it is recommended that you do not change the
-# order in which HOOKS are added.  Run 'mkinitcpio -H <hook name>' for
-# help on a given hook.
-# 'base' is _required_ unless you know precisely what you are doing.
-# 'udev' is _required_ in order to automatically load modules
-# 'filesystems' is _required_ unless you specify your fs modules in MODULES
-# Examples:
-##   This setup specifies all modules in the MODULES setting above.
-##   No raid, lvm2, or encrypted root is needed.
-#    HOOKS="base"
-#
-##   This setup will autodetect all modules for your system and should
-##   work as a sane default
-#    HOOKS="base udev autodetect pata scsi sata filesystems"
-#
-##   This is identical to the above, except the old ide subsystem is
-##   used for IDE devices instead of the new pata subsystem.
-#    HOOKS="base udev autodetect ide scsi sata filesystems"
-#
-##   This setup will generate a 'full' image which supports most systems.
-##   No autodetection is done.
-#    HOOKS="base udev pata scsi sata usb filesystems"
-#
-##   This setup assembles a pata mdadm array with an encrypted root FS.
-##   Note: See 'mkinitcpio -H mdadm' for more information on raid devices.
-#    HOOKS="base udev pata mdadm encrypt filesystems"
-#
-##   This setup loads an lvm2 volume group on a usb device.
-#    HOOKS="base udev usb lvm2 filesystems"
-#
-##   NOTE: If you have /usr on a separate partition, you MUST include the
-#    usr, fsck and shutdown hooks.
-HOOKS="base udev autodetect modconf block keymap keyboard $encrypt lvm2 resume filesystems fsck"
-
-# COMPRESSION
-# Use this to compress the initramfs image. By default, gzip compression
-# is used. Use 'cat' to create an uncompressed image.
-#COMPRESSION="gzip"
-#COMPRESSION="bzip2"
-#COMPRESSION="lzma"
-#COMPRESSION="xz"
-#COMPRESSION="lzop"
-
-# COMPRESSION_OPTIONS
-# Additional options for the compressor
-#COMPRESSION_OPTIONS=""
-EOF
-
-    mkinitcpio -p linux
 }
 
 set_daemons() {
@@ -519,13 +414,13 @@ create_user() {
     local name="$1"; shift
     local password="$1"; shift
 
-    useradd -m -s /bin/zsh -G adm,systemd-journal,wheel,rfkill,games,network,video,audio,optical,floppy,storage,scanner,power,adbusers,wireshark "$name"
+    useradd -m -s /bin/zsh -G adm,systemd-journal,wheel,rfkill,games,network,video,audio,optical,floppy,storage,scanner,power "$name"
     echo -en "$password\n$password" | passwd "$name"
 }
 
-update_locate() {
-    updatedb
-}
+#update_locate() {
+#    updatedb
+#}
 
 get_uuid() {
     blkid -o export "$1" | grep UUID | awk -F= '{print $2}'

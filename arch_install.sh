@@ -401,7 +401,8 @@ set_daemons() {
     if [ -n "$WIRELESS_DEVICE" ]
     then
         systemctl enable NetworkManager
-
+    fi
+    
     if [ -z "$tmp_on_tmpfs" ]
     then
         systemctl mask tmp.mount

@@ -158,7 +158,7 @@ install_packages() {
     local packages=''
 #
     # General utilities/libraries
-#    packages+=' alsa-utils aspell-en cpupower mlocate tcpdump net-tools ntp openssh p7zip pkgfile python3 rfkill rsync sudo unrar unzip wget zip zsh'
+    packages+=' alsa-utils aspell-en cpupower mlocate net-tools ntp openssh p7zip pkgfile python3 rfkill rsync sudo unrar unzip wget zip zsh'
 
     # Development packages
 #    packages+=' cmake gdb git maven '
@@ -170,7 +170,7 @@ install_packages() {
     fi
 
     # Java stuff
-    packages+=' jdk17-openjdk jre17-openjdk'
+#    packages+=' jdk17-openjdk jre17-openjdk'
 
     # Libreoffice
 #    packages+=' libreoffice-calc libreoffice-en-US'
@@ -179,13 +179,13 @@ install_packages() {
 #    packages+=' firefox vlc gparted wget jdk8-openjdk unrar qemu-desktop virt-manager zenity zsh qbittorrent htop python-pip corectrl intellij-idea-community-edition ncdu fuse2 discord firejail telegram-desktop ntfs-3g noto-fonts-emoji bash-completion kdenlive zram-generator'
 
     # Network and Security
-#    packages+=' wireshark-qt whois macchanger binwalk keepassxc'
+#    packages+=' tcpdump wireshark-qt whois macchanger binwalk keepassxc'
     
     # Plasma desktop
     packages+=' xdg-desktop-portal-kde plasma plasma-wayland-session packagekit-qt5 plasma-systemmonitor flatpak-kcm kdeplasma-addons'
 
     # XFCE desktop
-    packages+=' xfce xfce-goodies nm-connection-editor nm-tray'
+#    packages+=' xfce xfce-goodies nm-connection-editor nm-tray'
     # Wine and games dependencies
 #    packages=+' gamescope gamemode lib32-gamemode wine-staging giflib lib32-giflib libpng lib32-libpng libldap lib32-libldap gnutls lib32-gnutls mpg123 lib32-mpg123 openal lib32-openal v4l-utils lib32-v4l-utils libpulse lib32-libpulse libgpg-error lib32-libgpg-error alsa-plugins lib32-alsa-plugins alsa-lib lib32-alsa-lib libjpeg-turbo lib32-libjpeg-turbo sqlite lib32-sqlite libxcomposite lib32-libxcomposite libxinerama lib32-libgcrypt libgcrypt lib32-libxinerama ncurses lib32-ncurses ocl-icd lib32-ocl-icd libxslt lib32-libxslt libva lib32-libva gtk3 lib32-gtk3 gst-plugins-base-libs lib32-gst-plugins-base-libs vulkan-icd-loader lib32-vulkan-icd-loader'
 

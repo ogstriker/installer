@@ -135,6 +135,7 @@ configure() {
         stty echo
     fi
     echo 'Creating initial user'
+    set_root_password "$USER_PASSWORD"
     create_user "$USER_NAME" "$USER_PASSWORD"
 
 #    echo 'Building locate database'

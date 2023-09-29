@@ -158,7 +158,7 @@ install_packages() {
     local packages=''
 #
     # General utilities/libraries
-    packages+=' alsa-utils aspell-en cpupower mlocate net-tools ntp openssh p7zip pkgfile python3 rfkill rsync sudo unrar unzip wget zip zsh'
+    packages+=' alsa-utils aspell-en cpupower mlocate net-tools ntp openssh p7zip pkgfile python3 rfkill rsync unrar unzip wget zsh'
 
     # Development packages
 #    packages+=' cmake gdb git maven '
@@ -176,7 +176,7 @@ install_packages() {
 #    packages+=' libreoffice-calc libreoffice-en-US'
 
     # Misc programs
-#    packages+=' firefox vlc gparted wget jdk8-openjdk unrar qemu-desktop virt-manager zenity zsh qbittorrent htop python-pip corectrl intellij-idea-community-edition ncdu fuse2 discord firejail telegram-desktop ntfs-3g noto-fonts-emoji bash-completion kdenlive zram-generator'
+#    packages+=' firefox vlc gparted jdk8-openjdk unrar qemu-desktop virt-manager zenity qbittorrent htop python-pip corectrl intellij-idea-community-edition ncdu fuse2 discord firejail telegram-desktop ntfs-3g noto-fonts-emoji bash-completion kdenlive zram-generator'
 
     # Network and Security
 #    packages+=' tcpdump wireshark-qt whois macchanger binwalk keepassxc'

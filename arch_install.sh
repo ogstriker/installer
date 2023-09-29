@@ -105,8 +105,8 @@ configure() {
     echo 'Setting hosts file'
     set_hosts "$HOSTNAME"
 
-    echo 'Setting fstab'
-    set_fstab
+#    echo 'Setting fstab'
+#    set_fstab
 
     echo 'Configuring bootloader'
     grub_bootloader

@@ -1,6 +1,4 @@
 #!/bin/bash
-# and configures systemd as the init system (removing sysvinit).
-#
 # You should read through this script before running it in case you want to
 # make any modifications, in particular, the variables just below, and the
 # following functions:
@@ -9,22 +7,34 @@
 #                       (desktop environment, etc.)
 #    install_aur_packages - More packages after packer (AUR helper) is
 #                           installed
-#    set_netcfg - Preload netcfg profiles
 
 ## CONFIGURE THESE VARIABLES
 ## ALSO LOOK AT THE install_packages FUNCTION TO SEE WHAT IS ACTUALLY INSTALLED
 
-# Drive to install to.
-#DRIVE='/dev/sda'
+## You need to first connect to a internet and format the drives you gonna use
+## then mount them to /mnt and /mnt/boot/EFI and finally execute the script
 
-# Hostname of the installed machine.
-HOSTNAME='strikerhost'
+# Drive to install to.
+#DRIVE='/dev/nvme0n1p1'
 
 # Encrypt everything (except /boot).  Leave blank to disable.
 #ENCRYPT_DRIVE='TRUE'
 
 # Passphrase used to encrypt the drive (leave blank to be prompted).
 #DRIVE_PASSPHRASE='a'
+
+# Choose your video driver
+# For Intel
+#VIDEO_DRIVER="i915"
+# For nVidia
+#VIDEO_DRIVER="nouveau"
+# For ATI
+#VIDEO_DRIVER="radeon"
+# For generic stuff
+#VIDEO_DRIVER="vesa"
+
+# Hostname of the installed machine.
+HOSTNAME='strikerhost'
 
 # Root password (leave blank to be prompted).
 ROOT_PASSWORD=''
@@ -44,16 +54,6 @@ TMP_ON_TMPFS='TRUE'
 
 KEYMAP='us'
 # KEYMAP='dvorak'
-
-# Choose your video driver
-# For Intel
-#VIDEO_DRIVER="i915"
-# For nVidia
-#VIDEO_DRIVER="nouveau"
-# For ATI
-#VIDEO_DRIVER="radeon"
-# For generic stuff
-#VIDEO_DRIVER="vesa"
 
 # Wireless device, leave blank to not use wireless and use DHCP instead.
 WIRELESS_DEVICE="wlan0"
@@ -90,9 +90,6 @@ configure() {
     echo 'Clearing package tarballs'
     clean_packages
 
-#    echo 'Updating pkgfile database'
-#    update_pkgfile
-
     echo 'Setting hostname'
     set_hostname "$HOSTNAME"
 
@@ -108,29 +105,17 @@ configure() {
     echo 'Setting hosts file'
     set_hosts "$HOSTNAME"
 
-#    echo 'Setting fstab'
-#    set_fstab "$TMP_ON_TMPFS" "$boot_dev"
-
-#    echo 'Setting initial modules to load'
-#    set_modules_load
+    echo 'Setting fstab'
+    set_fstab
 
     echo 'Configuring bootloader'
     grub_bootloader
 
-#    echo 'Configuring initial ramdisk'
-#    set_initcpio
-
-#    echo 'Setting initial daemons'
-#    set_daemons "$TMP_ON_TMPFS"
+    echo 'Setting initial daemons'
+    set_daemons "$TMP_ON_TMPFS"
 
     echo 'Configuring sudo'
     set_sudoers
-
-#    if [ -n "$WIRELESS_DEVICE" ]
-#    then
-#        echo 'Configuring netcfg'
-#        set_netcfg
-#    fi
 
     if [ -z "$ROOT_PASSWORD" ]
     then
@@ -173,12 +158,10 @@ install_packages() {
     local packages=''
 #
     # General utilities/libraries
-#    packages+=' alsa-utils aspell-en chromium cpupower gvim mlocate net-tools ntp openssh p7zip pkgfile powertop python3 rfkill rsync sudo unrar unzip wget zip systemd-sysvcompat zsh'
-
-# DPS CONFIGURAR O OH-MY-ZSH
+#    packages+=' alsa-utils aspell-en cpupower mlocate tcpdump net-tools ntp openssh p7zip pkgfile python3 rfkill rsync sudo unrar unzip wget zip zsh'
 
     # Development packages
-#    packages+=' cmake gdb git maven tcpdump '
+#    packages+=' cmake gdb git maven '
 
     # Netcfg
     if [ -n "$WIRELESS_DEVICE" ]
@@ -193,10 +176,18 @@ install_packages() {
 #    packages+=' libreoffice-calc libreoffice-en-US'
 
     # Misc programs
-#    packages+=' firefox vlc gparted wget jdk8-openjdk unrar qemu-desktop virt-manager zenity zsh qbittorrent htop python-pip corectrl intellij-idea-community-edition ncdu fuse2 discord firejail telegram-desktop ntfs-3g noto-fonts-emoji bash-completion kdenlive'
+#    packages+=' firefox vlc gparted wget jdk8-openjdk unrar qemu-desktop virt-manager zenity zsh qbittorrent htop python-pip corectrl intellij-idea-community-edition ncdu fuse2 discord firejail telegram-desktop ntfs-3g noto-fonts-emoji bash-completion kdenlive zram-generator'
 
-    # Plasma Desktop
-    packages+=' plasma plasma-wayland-session packagekit-qt5'
+    # Network and Security
+#    packages+=' wireshark-qt whois macchanger binwalk keepassxc'
+    
+    # Plasma desktop
+    packages+=' xdg-desktop-portal-kde plasma plasma-wayland-session packagekit-qt5 plasma-systemmonitor flatpak-kcm kdeplasma-addons'
+
+    # XFCE desktop
+    packages+=' xfce xfce-goodies nm-connection-editor nm-tray'
+    # Wine and games dependencies
+#    packages=+' gamescope gamemode lib32-gamemode wine-staging giflib lib32-giflib libpng lib32-libpng libldap lib32-libldap gnutls lib32-gnutls mpg123 lib32-mpg123 openal lib32-openal v4l-utils lib32-v4l-utils libpulse lib32-libpulse libgpg-error lib32-libgpg-error alsa-plugins lib32-alsa-plugins alsa-lib lib32-alsa-lib libjpeg-turbo lib32-libjpeg-turbo sqlite lib32-sqlite libxcomposite lib32-libxcomposite libxinerama lib32-libgcrypt libgcrypt lib32-libxinerama ncurses lib32-ncurses ocl-icd lib32-ocl-icd libxslt lib32-libxslt libva lib32-libva gtk3 lib32-gtk3 gst-plugins-base-libs lib32-gst-plugins-base-libs vulkan-icd-loader lib32-vulkan-icd-loader'
 
     # Xserver
     packages+=' xorg-apps xorg-server xorg-xinit xterm'
@@ -216,8 +207,22 @@ install_packages() {
     pacman -Sy --noconfirm $packages
 }
 
+# FIX THIS
+
+#chaotic_aur(){
+#    pacman-key --recv-key 3056513887B78AEB --keyserver keyserver.ubuntu.com
+#    pacman-key --lsign-key 3056513887B78AEB
+#    pacman -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst' 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst'
+#
+#    cat /etc/pacman.conf <<EOF    
+#    
+#[chaotic-aur]
+#Include = /etc/pacman.d/chaotic-mirrorlist
+#EOF
+#}
+
 #install_yay() {
- #   mkdir -p /foo
+#    mkdir -p /foo
 #    cd /foo
 #    git clone https://aur.archlinux.org/yay.git
 #    cd yay
@@ -230,9 +235,7 @@ install_packages() {
 #install_aur_packages() {
 #    mkdir /foo
 #    export TMPDIR=/foo
-#    yay -S --noconfirm lightly-git
-#    yay -S --noconfirm q4wine-git
-#    yay -S --noconfirm appimagelauncher
+#    yay -S --noconfirm lightly-git appimagelauncher q4wine-git protonup-qt-bin obs-studio heroic-games-launcher pamac-aur zulu-jdk-fx-bin detect-it-easy-bin vkbasalt lib32-vkbasalt mangohud-git lib32-mangohud-git goverlay-git
 #    unset TMPDIR
 #    rm -rf /foo
 #}
@@ -240,10 +243,6 @@ install_packages() {
 clean_packages() {
     yes | pacman -Scc
 }
-
-#update_pkgfile() {
-#    pkgfile -u
-#}
 
 grub_bootloader() {
     grub-install --target=x86_64-efi --bootloader-id="Striker's Arch Linux" --recheck
@@ -302,6 +301,134 @@ set_daemons() {
     then
         systemctl mask tmp.mount
     fi
+}
+
+# IF U HAVE +8GB RAM, IN "zram-size = ram" DIVIDE BY 2, E.G: "zram-size = ram / 2"
+setup_zram(){
+    cat > /etc/systemd/zram-generator.conf <<EOF
+[zram0]
+zram-size = ram
+compression-algorithm = zstd
+swap-priority = 100
+fs-type = swap
+EOF
+}
+
+config_zsh(){
+    wget --no-check-certificate http://install.ohmyz.sh -O - | sh
+    cat > ~/.zshrc <<EOF
+    
+# If you come from bash you might have to change your $PATH.
+# export PATH=$HOME/bin:/usr/local/bin:$PATH
+
+# Path to your oh-my-zsh installation.
+export ZSH="$HOME/.oh-my-zsh"
+
+# Set name of the theme to load --- if set to "random", it will
+# load a random theme each time oh-my-zsh is loaded, in which case,
+# to know which specific one was loaded, run: echo $RANDOM_THEME
+# See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
+ZSH_THEME="agnoster"
+
+# Set list of themes to pick from when loading at random
+# Setting this variable when ZSH_THEME=random will cause zsh to load
+# a theme from this variable instead of looking in $ZSH/themes/
+# If set to an empty array, this variable will have no effect.
+# ZSH_THEME_RANDOM_CANDIDATES=( "robbyrussell" "agnoster" )
+
+# Uncomment the following line to use case-sensitive completion.
+# CASE_SENSITIVE="true"
+
+# Uncomment the following line to use hyphen-insensitive completion.
+# Case-sensitive completion must be off. _ and - will be interchangeable.
+# HYPHEN_INSENSITIVE="true"
+
+# Uncomment one of the following lines to change the auto-update behavior
+# zstyle ':omz:update' mode disabled  # disable automatic updates
+# zstyle ':omz:update' mode auto      # update automatically without asking
+# zstyle ':omz:update' mode reminder  # just remind me to update when it's time
+
+# Uncomment the following line to change how often to auto-update (in days).
+# zstyle ':omz:update' frequency 13
+
+# Uncomment the following line if pasting URLs and other text is messed up.
+# DISABLE_MAGIC_FUNCTIONS="true"
+
+# Uncomment the following line to disable colors in ls.
+# DISABLE_LS_COLORS="true"
+
+# Uncomment the following line to disable auto-setting terminal title.
+# DISABLE_AUTO_TITLE="true"
+
+# Uncomment the following line to enable command auto-correction.
+# ENABLE_CORRECTION="true"
+
+# Uncomment the following line to display red dots whilst waiting for completion.
+# You can also set it to another string to have that shown instead of the default red dots.
+# e.g. COMPLETION_WAITING_DOTS="%F{yellow}waiting...%f"
+# Caution: this setting can cause issues with multiline prompts in zsh < 5.7.1 (see #5765)
+# COMPLETION_WAITING_DOTS="true"
+
+# Uncomment the following line if you want to disable marking untracked files
+# under VCS as dirty. This makes repository status check for large repositories
+# much, much faster.
+# DISABLE_UNTRACKED_FILES_DIRTY="true"
+
+# Uncomment the following line if you want to change the command execution time
+# stamp shown in the history command output.
+# You can set one of the optional three formats:
+# "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
+# or set a custom format using the strftime function format specifications,
+# see 'man strftime' for details.
+# HIST_STAMPS="mm/dd/yyyy"
+
+# Would you like to use another custom folder than $ZSH/custom?
+# ZSH_CUSTOM=/path/to/new-custom-folder
+
+# Which plugins would you like to load?
+# Standard plugins can be found in $ZSH/plugins/
+# Custom plugins may be added to $ZSH_CUSTOM/plugins/
+# Example format: plugins=(rails git textmate ruby lighthouse)
+# Add wisely, as too many plugins slow down shell startup.
+plugins=(git)
+
+source $ZSH/oh-my-zsh.sh
+
+# User configuration
+
+# export MANPATH="/usr/local/man:$MANPATH"
+
+# You may need to manually set your language environment
+# export LANG=en_US.UTF-8
+
+# Preferred editor for local and remote sessions
+# if [[ -n $SSH_CONNECTION ]]; then
+#   export EDITOR='vim'
+# else
+#   export EDITOR='mvim'
+# fi
+
+# Compilation flags
+# export ARCHFLAGS="-arch x86_64"
+
+# Set personal aliases, overriding those provided by oh-my-zsh libs,
+# plugins, and themes. Aliases can be placed here, though oh-my-zsh
+# users are encouraged to define aliases within the ZSH_CUSTOM folder.
+# For a full list of active aliases, run `alias`.
+#
+# Example aliases
+# alias zshconfig="mate ~/.zshrc"
+# alias ohmyzsh="mate ~/.oh-my-zsh"
+EOF
+}
+
+swapspace(){
+    git clone https://github.com/Tookmund/Swapspace && cd Swapspace
+    autoreconf -i
+    ./configure && make && make install
+    mv swapspace.service /etc/systemd/system
+    systemctl enable swapspace
+    cd .. & rm -rf Swapspace/
 }
 
 set_sudoers() {

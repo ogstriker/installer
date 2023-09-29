@@ -11,8 +11,18 @@
 ## CONFIGURE THESE VARIABLES
 ## ALSO LOOK AT THE install_packages FUNCTION TO SEE WHAT IS ACTUALLY INSTALLED
 
+## TO GET THE SCRIPT:
+## Install git through "pacman -Sy archlinux-keyring git"
+## and then pull the script "git clone https://github.com/ogstriker/installer"
+
 ## You need to first connect to a internet and format the drives you gonna use
 ## then mount them to /mnt and /mnt/boot/EFI and finally execute the script
+
+
+
+#################################################################################
+
+
 
 # Drive to install to.
 #DRIVE='/dev/nvme0n1p1'

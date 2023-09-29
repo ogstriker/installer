@@ -161,7 +161,7 @@ configure() {
 install_base() {
     echo 'Server = http://mirrors.kernel.org/archlinux/$repo/os/$arch' >> /etc/pacman.d/mirrorlist
 
-    pacstrap /mnt base base-devel
+    pacstrap /mnt base base-devel grub efibootmgr linux-zen linux-firmware
 }
 
 unmount_filesystems() {
@@ -193,7 +193,7 @@ install_packages() {
 #    packages+=' libreoffice-calc libreoffice-en-US'
 
     # Misc programs
-    packages+=' firefox vlc gparted wget jdk8-openjdk unrar qemu-desktop virt-manager zenity steam zsh qbittorrent htop python-pip corectrl spotify intellij-idea-community-edition ncdu discord firejail telegram-desktop ntfs-3g windscribe-bin noto-fonts-emoji minecraft-launcher bash-completion kdenlive'
+#    packages+=' firefox vlc gparted wget jdk8-openjdk unrar qemu-desktop virt-manager zenity zsh qbittorrent htop python-pip corectrl intellij-idea-community-edition ncdu fuse2 discord firejail telegram-desktop ntfs-3g noto-fonts-emoji bash-completion kdenlive'
 
     # Plasma Desktop
     packages+=' plasma plasma-wayland-session packagekit-qt5'

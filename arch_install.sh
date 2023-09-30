@@ -144,8 +144,8 @@ configure() {
         read USER_PASSWORD
         stty echo
     fi
-    echo 'Creating initial user'
-    set_root_password "$USER_PASSWORD"
+    echo 'Creating user'
+    set_user_password "$USER_PASSWORD"
     create_user "$USER_NAME" "$USER_PASSWORD"
 
 #    echo 'Building locate database'
@@ -543,6 +543,12 @@ EOF
 }
 
 set_root_password() {
+    local password="$1"; shift
+
+    echo -en "$password\n$password" | passwd
+}
+
+set_user_password() {
     local password="$1"; shift
 
     echo -en "$password\n$password" | passwd

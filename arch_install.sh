@@ -155,7 +155,7 @@ configure() {
 }
 
 install_base() {
-    echo 'Server = http://mirrors.kernel.org/archlinux/$repo/os/$arch' >> /etc/pacman.d/mirrorlist
+#    echo 'Server = http://mirrors.kernel.org/archlinux/$repo/os/$arch' >> /etc/pacman.d/mirrorlist
 
     pacstrap /mnt base base-devel grub efibootmgr linux-zen linux-firmware
 }

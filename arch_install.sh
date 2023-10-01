@@ -182,7 +182,7 @@ install_packages() {
     # Netcfg
     if [ -n "$WIRELESS_DEVICE" ]
     then
-        packages+='dialog wireless_tools wpa_supplicant'
+        packages+=' dialog wireless_tools wpa_supplicant'
     fi
 
     # Java stuff

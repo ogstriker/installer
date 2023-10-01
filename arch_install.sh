@@ -177,14 +177,17 @@ install_packages() {
 #    packages+=' libreoffice-fresh hunspell'
 
     # Misc programs
-#    packages+=' firefox vlc jdk8-openjdk unrar qemu-desktop virt-manager zenity qbittorrent corectrl intellij-idea-community-edition ncdu fuse2 discord firejail telegram-desktop ntfs-3g noto-fonts-emoji kdenlive'
+#    packages+=' firefox speech-dispatcher vlc jdk8-openjdk unrar qemu-desktop virt-manager zenity qbittorrent corectrl intellij-idea-community-edition ncdu fuse2 discord firejail telegram-desktop ntfs-3g noto-fonts-emoji kdenlive'
 
     # Network and Security
 #    packages+=' tcpdump wireshark-qt whois macchanger binwalk keepassxc'
     
     # Plasma desktop
-#    packages+=' xdg-desktop-portal-kde plasma plasma-wayland-session konsole packagekit-qt5 plasma-systemmonitor flatpak-kcm kdeplasma-addons'
+    packages+=' xdg-desktop-portal-kde plasma plasma-wayland-session konsole dolphin dolphin-plugins packagekit-qt5 plasma-systemmonitor flatpak-kcm kdeplasma-addons bluedevil breeze breeze-gtk breeze-plymouth drkonqi flatpak-kcmkactivitymanagerd kde-cli-tools kde-gtk-config kdecoration kdeplasma-addons kgamma5 khotkeys kinfocenter kmenuedit kpipewire kscreen kscreenlocker ksshaskpass ksystemstats kwallet-pam kwayland-integration kwin  kwrited layer-shell-qt ibkscreen libksysguard  milou plasma-browser-integration plasma-desktop plasma-disks  plasma-firewall plasma-integration plasma-nm plasma-pa plasma-sdkplasma-thunderbolt plasma-vault plasma-welcome plasma-workspace plasma-workspace-wallpapers plymouth-kcm polkit-kde-agent powerdevil sddm-kcmsystemsettings'
 
+    # Plasma apps
+    packages+=' gwenview akregator okular elisa spectable kfind krdc kamoso konversation kontact telepathy-morse'
+    
     # XFCE desktop
 #    packages+=' xfce xfce-goodies nm-connection-editor nm-tray'
 

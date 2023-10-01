@@ -85,8 +85,13 @@ setup() {
     else
         echo 'Unmounting filesystems'
         unmount_filesystems
-        echo 'Done! Reboot system.'
+        #echo 'Done! Reboot system.'
+        reboot
     fi
+}
+
+user_chroot(){
+    arch-chroot -u $USER_NAME /mnt/
 }
 
 configure() {
@@ -301,7 +306,7 @@ genfstab -U /mnt
 set_daemons() {
     local tmp_on_tmpfs="$1"; shift
 
-    systemctl enable cpupower.service
+    systemctl enable cpupower.service sddm.service
 
     if [ -n "$WIRELESS_DEVICE" ]
     then

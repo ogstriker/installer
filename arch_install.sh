@@ -176,7 +176,7 @@ install_packages() {
     local packages=''
 #
     # General utilities/libraries
-    packages+=' alsa-utils aspell-en cpupower mlocate net-tools ntp openssh p7zip pkgfile python3 rfkill rsync unrar unzip wget zsh'
+    packages+=' alsa-utils aspell-en cpupower mlocate net-tools ntp openssh p7zip pkgfile python3 rfkill rsync unrar unzip wget zsh git'
 
     # Development packages
 #    packages+=' cmake gdb git maven '

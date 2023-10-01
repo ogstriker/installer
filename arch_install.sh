@@ -24,15 +24,6 @@
 
 
 
-# Drive to install to.
-#DRIVE='/dev/nvme0n1p1'
-
-# Encrypt everything (except /boot).  Leave blank to disable.
-#ENCRYPT_DRIVE='TRUE'
-
-# Passphrase used to encrypt the drive (leave blank to be prompted).
-#DRIVE_PASSPHRASE='a'
-
 # Choose your video driver
 # For Intel
 #VIDEO_DRIVER="i915"
@@ -85,8 +76,8 @@ setup() {
     else
         echo 'Unmounting filesystems'
         unmount_filesystems
-        #echo 'Done! Reboot system.'
-        reboot
+        echo 'Done! Reboot system.'
+        #reboot
     fi
 }
 
@@ -122,11 +113,8 @@ configure() {
     echo 'Setting hosts file'
     set_hosts "$HOSTNAME"
 
-#    echo 'Setting fstab'
-#    set_fstab
-
-    echo 'Configuring bootloader'
-    grub_bootloader
+    #echo 'Configuring bootloader'
+    #grub_bootloader
 
     echo 'Setting initial daemons'
     set_daemons "$TMP_ON_TMPFS"
@@ -155,15 +143,10 @@ configure() {
     set_user_password "$USER_PASSWORD"
     create_user "$USER_NAME" "$USER_PASSWORD"
 
-#    echo 'Building locate database'
-#    update_locate
-
     rm /setup.sh
 }
 
 install_base() {
-#    echo 'Server = http://mirrors.kernel.org/archlinux/$repo/os/$arch' >> /etc/pacman.d/mirrorlist
-
     pacstrap /mnt base base-devel grub efibootmgr linux-zen linux-firmware nano
 }
 
@@ -174,9 +157,9 @@ unmount_filesystems() {
 
 install_packages() {
     local packages=''
-#
-    # General utilities/libraries
-    packages+=' alsa-utils aspell-en cpupower mlocate net-tools ntp openssh p7zip pkgfile python3 rfkill rsync unrar unzip wget zsh git'
+    
+    # Essential packages
+    packages+=' aspell-en cpupower mlocate openssh p7zip pkgfile python3 python-pip rsync unrar unzip wget zsh git gparted zram-generator htop bash-completion'
 
     # Development packages
 #    packages+=' cmake gdb git maven '
@@ -184,26 +167,27 @@ install_packages() {
     # Netcfg
     if [ -n "$WIRELESS_DEVICE" ]
     then
-        packages+=' dialog wireless_tools wpa_supplicant'
+        packages+=' dialog wireless_tools wpa_supplicant net-tools'
     fi
 
     # Java stuff
 #    packages+=' jdk17-openjdk jre17-openjdk'
 
     # Libreoffice
-#    packages+=' libreoffice-calc libreoffice-en-US'
+#    packages+=' libreoffice-fresh hunspell'
 
     # Misc programs
-#    packages+=' firefox vlc gparted jdk8-openjdk unrar qemu-desktop virt-manager zenity qbittorrent htop python-pip corectrl intellij-idea-community-edition ncdu fuse2 discord firejail telegram-desktop ntfs-3g noto-fonts-emoji bash-completion kdenlive zram-generator'
+#    packages+=' firefox vlc jdk8-openjdk unrar qemu-desktop virt-manager zenity qbittorrent corectrl intellij-idea-community-edition ncdu fuse2 discord firejail telegram-desktop ntfs-3g noto-fonts-emoji kdenlive'
 
     # Network and Security
 #    packages+=' tcpdump wireshark-qt whois macchanger binwalk keepassxc'
     
     # Plasma desktop
-    #packages+=' xdg-desktop-portal-kde plasma plasma-wayland-session packagekit-qt5 plasma-systemmonitor flatpak-kcm kdeplasma-addons'
+#    packages+=' xdg-desktop-portal-kde plasma plasma-wayland-session konsole packagekit-qt5 plasma-systemmonitor flatpak-kcm kdeplasma-addons'
 
     # XFCE desktop
 #    packages+=' xfce xfce-goodies nm-connection-editor nm-tray'
+
     # Wine and games dependencies
 #    packages=+' gamescope gamemode lib32-gamemode wine-staging giflib lib32-giflib libpng lib32-libpng libldap lib32-libldap gnutls lib32-gnutls mpg123 lib32-mpg123 openal lib32-openal v4l-utils lib32-v4l-utils libpulse lib32-libpulse libgpg-error lib32-libgpg-error alsa-plugins lib32-alsa-plugins alsa-lib lib32-alsa-lib libjpeg-turbo lib32-libjpeg-turbo sqlite lib32-sqlite libxcomposite lib32-libxcomposite libxinerama lib32-libgcrypt libgcrypt lib32-libxinerama ncurses lib32-ncurses ocl-icd lib32-ocl-icd libxslt lib32-libxslt libva lib32-libva gtk3 lib32-gtk3 gst-plugins-base-libs lib32-gst-plugins-base-libs vulkan-icd-loader lib32-vulkan-icd-loader'
 
@@ -224,8 +208,6 @@ install_packages() {
 
     pacman -Sy --noconfirm $packages
 }
-
-# FIX THIS
 
 chaotic_aur(){
     pacman-key --recv-key 3056513887B78AEB --keyserver keyserver.ubuntu.com
@@ -337,34 +319,15 @@ EOF
 pacman -Sy --noconfirm
 }
 
-#install_yay() {
-#    mkdir -p /foo
-#    cd /foo
-#    git clone https://aur.archlinux.org/yay.git
-#    cd yay
-#    makepkg -si --noconfirm
-#
-#    cd /
-#    rm -rf /foo
-#}
-
-#install_aur_packages() {
-#    mkdir /foo
-#    export TMPDIR=/foo
-#    yay -S --noconfirm lightly-git appimagelauncher q4wine-git protonup-qt-bin obs-studio heroic-games-launcher pamac-aur zulu-jdk-fx-bin detect-it-easy-bin vkbasalt lib32-vkbasalt mangohud-git lib32-mangohud-git goverlay-git
-#    unset TMPDIR
-#    rm -rf /foo
-#}
-
 clean_packages() {
     yes | pacman -Scc
 }
 
-grub_bootloader() {
-    grub-install --target=x86_64-efi --bootloader-id="Striker's Arch Linux" --recheck
-
-    grub-mkconfig -o /boot/grub/grub.cfg
-}
+#grub_bootloader() {
+#    grub-install --target=x86_64-efi --bootloader-id="Striker's Arch Linux" --recheck
+#
+#    grub-mkconfig -o /boot/grub/grub.cfg
+#}
 
 set_hostname() {
     local hostname="$1"; shift
@@ -380,7 +343,6 @@ set_timezone() {
 
 set_locale() {
     echo 'LANG="en_US.UTF-8"' >> /etc/locale.conf
-    echo 'LC_COLLATE="C"' >> /etc/locale.conf
     echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen
     locale-gen
 }
@@ -419,7 +381,7 @@ set_daemons() {
     fi
 }
 
-# IF U HAVE +8GB RAM, IN "zram-size = ram" DIVIDE BY 2, E.G: "zram-size = ram / 2"
+# IF U HAVE +8GB RAM, IN "zram-size = ram" DIVIDE IT BY 2, E.G: "zram-size = ram / 2"
 setup_zram(){
     cat > /etc/systemd/zram-generator.conf <<EOF
 [zram0]
@@ -427,114 +389,6 @@ zram-size = ram
 compression-algorithm = zstd
 swap-priority = 100
 fs-type = swap
-EOF
-}
-
-config_zsh(){
-    wget --no-check-certificate http://install.ohmyz.sh -O - | sh
-    cat > ~/.zshrc <<EOF
-    
-# If you come from bash you might have to change your $PATH.
-# export PATH=$HOME/bin:/usr/local/bin:$PATH
-
-# Path to your oh-my-zsh installation.
-export ZSH="$HOME/.oh-my-zsh"
-
-# Set name of the theme to load --- if set to "random", it will
-# load a random theme each time oh-my-zsh is loaded, in which case,
-# to know which specific one was loaded, run: echo $RANDOM_THEME
-# See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-ZSH_THEME="agnoster"
-
-# Set list of themes to pick from when loading at random
-# Setting this variable when ZSH_THEME=random will cause zsh to load
-# a theme from this variable instead of looking in $ZSH/themes/
-# If set to an empty array, this variable will have no effect.
-# ZSH_THEME_RANDOM_CANDIDATES=( "robbyrussell" "agnoster" )
-
-# Uncomment the following line to use case-sensitive completion.
-# CASE_SENSITIVE="true"
-
-# Uncomment the following line to use hyphen-insensitive completion.
-# Case-sensitive completion must be off. _ and - will be interchangeable.
-# HYPHEN_INSENSITIVE="true"
-
-# Uncomment one of the following lines to change the auto-update behavior
-# zstyle ':omz:update' mode disabled  # disable automatic updates
-# zstyle ':omz:update' mode auto      # update automatically without asking
-# zstyle ':omz:update' mode reminder  # just remind me to update when it's time
-
-# Uncomment the following line to change how often to auto-update (in days).
-# zstyle ':omz:update' frequency 13
-
-# Uncomment the following line if pasting URLs and other text is messed up.
-# DISABLE_MAGIC_FUNCTIONS="true"
-
-# Uncomment the following line to disable colors in ls.
-# DISABLE_LS_COLORS="true"
-
-# Uncomment the following line to disable auto-setting terminal title.
-# DISABLE_AUTO_TITLE="true"
-
-# Uncomment the following line to enable command auto-correction.
-# ENABLE_CORRECTION="true"
-
-# Uncomment the following line to display red dots whilst waiting for completion.
-# You can also set it to another string to have that shown instead of the default red dots.
-# e.g. COMPLETION_WAITING_DOTS="%F{yellow}waiting...%f"
-# Caution: this setting can cause issues with multiline prompts in zsh < 5.7.1 (see #5765)
-# COMPLETION_WAITING_DOTS="true"
-
-# Uncomment the following line if you want to disable marking untracked files
-# under VCS as dirty. This makes repository status check for large repositories
-# much, much faster.
-# DISABLE_UNTRACKED_FILES_DIRTY="true"
-
-# Uncomment the following line if you want to change the command execution time
-# stamp shown in the history command output.
-# You can set one of the optional three formats:
-# "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
-# or set a custom format using the strftime function format specifications,
-# see 'man strftime' for details.
-# HIST_STAMPS="mm/dd/yyyy"
-
-# Would you like to use another custom folder than $ZSH/custom?
-# ZSH_CUSTOM=/path/to/new-custom-folder
-
-# Which plugins would you like to load?
-# Standard plugins can be found in $ZSH/plugins/
-# Custom plugins may be added to $ZSH_CUSTOM/plugins/
-# Example format: plugins=(rails git textmate ruby lighthouse)
-# Add wisely, as too many plugins slow down shell startup.
-plugins=(git)
-
-source $ZSH/oh-my-zsh.sh
-
-# User configuration
-
-# export MANPATH="/usr/local/man:$MANPATH"
-
-# You may need to manually set your language environment
-# export LANG=en_US.UTF-8
-
-# Preferred editor for local and remote sessions
-# if [[ -n $SSH_CONNECTION ]]; then
-#   export EDITOR='vim'
-# else
-#   export EDITOR='mvim'
-# fi
-
-# Compilation flags
-# export ARCHFLAGS="-arch x86_64"
-
-# Set personal aliases, overriding those provided by oh-my-zsh libs,
-# plugins, and themes. Aliases can be placed here, though oh-my-zsh
-# users are encouraged to define aliases within the ZSH_CUSTOM folder.
-# For a full list of active aliases, run `alias`.
-#
-# Example aliases
-# alias zshconfig="mate ~/.zshrc"
-# alias ohmyzsh="mate ~/.oh-my-zsh"
 EOF
 }
 
@@ -667,13 +521,9 @@ create_user() {
     echo -en "$password\n$password" | passwd "$name"
 }
 
-#update_locate() {
-#    updatedb
+#get_uuid() {
+#    blkid -o export "$1" | grep UUID | awk -F= '{print $2}'
 #}
-
-get_uuid() {
-    blkid -o export "$1" | grep UUID | awk -F= '{print $2}'
-}
 
 set -ex
 
@@ -683,3 +533,138 @@ then
 else
     setup
 fi
+
+
+
+
+
+
+
+
+
+#install_yay() {
+#    mkdir -p /foo
+#    cd /foo
+#    git clone https://aur.archlinux.org/yay.git
+#    cd yay
+#    makepkg -si --noconfirm
+#
+#    cd /
+#    rm -rf /foo
+#}
+
+#aur_packages() {
+#    mkdir /foo
+#    export TMPDIR=/foo
+#    yay -S --noconfirm lightly-git appimagelauncher q4wine-git protonup-qt-bin obs-studio heroic-games-launcher pamac-aur zulu-jdk-fx-bin detect-it-easy-bin vkbasalt lib32-vkbasalt mangohud-git lib32-mangohud-git goverlay-git
+#    unset TMPDIR
+#    rm -rf /foo
+#}
+
+config_zsh(){
+    wget --no-check-certificate http://install.ohmyz.sh -O - | sh
+    cat > ~/.zshrc <<EOF
+    
+# If you come from bash you might have to change your $PATH.
+# export PATH=$HOME/bin:/usr/local/bin:$PATH
+
+# Path to your oh-my-zsh installation.
+export ZSH="$HOME/.oh-my-zsh"
+
+# Set name of the theme to load --- if set to "random", it will
+# load a random theme each time oh-my-zsh is loaded, in which case,
+# to know which specific one was loaded, run: echo $RANDOM_THEME
+# See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
+ZSH_THEME="agnoster"
+
+# Set list of themes to pick from when loading at random
+# Setting this variable when ZSH_THEME=random will cause zsh to load
+# a theme from this variable instead of looking in $ZSH/themes/
+# If set to an empty array, this variable will have no effect.
+# ZSH_THEME_RANDOM_CANDIDATES=( "robbyrussell" "agnoster" )
+
+# Uncomment the following line to use case-sensitive completion.
+# CASE_SENSITIVE="true"
+
+# Uncomment the following line to use hyphen-insensitive completion.
+# Case-sensitive completion must be off. _ and - will be interchangeable.
+# HYPHEN_INSENSITIVE="true"
+
+# Uncomment one of the following lines to change the auto-update behavior
+# zstyle ':omz:update' mode disabled  # disable automatic updates
+# zstyle ':omz:update' mode auto      # update automatically without asking
+# zstyle ':omz:update' mode reminder  # just remind me to update when it's time
+
+# Uncomment the following line to change how often to auto-update (in days).
+# zstyle ':omz:update' frequency 13
+
+# Uncomment the following line if pasting URLs and other text is messed up.
+# DISABLE_MAGIC_FUNCTIONS="true"
+
+# Uncomment the following line to disable colors in ls.
+# DISABLE_LS_COLORS="true"
+
+# Uncomment the following line to disable auto-setting terminal title.
+# DISABLE_AUTO_TITLE="true"
+
+# Uncomment the following line to enable command auto-correction.
+# ENABLE_CORRECTION="true"
+
+# Uncomment the following line to display red dots whilst waiting for completion.
+# You can also set it to another string to have that shown instead of the default red dots.
+# e.g. COMPLETION_WAITING_DOTS="%F{yellow}waiting...%f"
+# Caution: this setting can cause issues with multiline prompts in zsh < 5.7.1 (see #5765)
+# COMPLETION_WAITING_DOTS="true"
+
+# Uncomment the following line if you want to disable marking untracked files
+# under VCS as dirty. This makes repository status check for large repositories
+# much, much faster.
+# DISABLE_UNTRACKED_FILES_DIRTY="true"
+
+# Uncomment the following line if you want to change the command execution time
+# stamp shown in the history command output.
+# You can set one of the optional three formats:
+# "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
+# or set a custom format using the strftime function format specifications,
+# see 'man strftime' for details.
+# HIST_STAMPS="mm/dd/yyyy"
+
+# Would you like to use another custom folder than $ZSH/custom?
+# ZSH_CUSTOM=/path/to/new-custom-folder
+
+# Which plugins would you like to load?
+# Standard plugins can be found in $ZSH/plugins/
+# Custom plugins may be added to $ZSH_CUSTOM/plugins/
+# Example format: plugins=(rails git textmate ruby lighthouse)
+# Add wisely, as too many plugins slow down shell startup.
+plugins=(git)
+
+source $ZSH/oh-my-zsh.sh
+
+# User configuration
+
+# export MANPATH="/usr/local/man:$MANPATH"
+
+# You may need to manually set your language environment
+# export LANG=en_US.UTF-8
+
+# Preferred editor for local and remote sessions
+# if [[ -n $SSH_CONNECTION ]]; then
+#   export EDITOR='vim'
+# else
+#   export EDITOR='mvim'
+# fi
+
+# Compilation flags
+# export ARCHFLAGS="-arch x86_64"
+
+# Set personal aliases, overriding those provided by oh-my-zsh libs,
+# plugins, and themes. Aliases can be placed here, though oh-my-zsh
+# users are encouraged to define aliases within the ZSH_CUSTOM folder.
+# For a full list of active aliases, run `alias`.
+#
+# Example aliases
+# alias zshconfig="mate ~/.zshrc"
+# alias ohmyzsh="mate ~/.oh-my-zsh"
+EOF
+}

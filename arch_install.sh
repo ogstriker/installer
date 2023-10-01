@@ -200,7 +200,7 @@ install_packages() {
 #    packages+=' tcpdump wireshark-qt whois macchanger binwalk keepassxc'
     
     # Plasma desktop
-    packages+=' xdg-desktop-portal-kde plasma plasma-wayland-session packagekit-qt5 plasma-systemmonitor flatpak-kcm kdeplasma-addons'
+    #packages+=' xdg-desktop-portal-kde plasma plasma-wayland-session packagekit-qt5 plasma-systemmonitor flatpak-kcm kdeplasma-addons'
 
     # XFCE desktop
 #    packages+=' xfce xfce-goodies nm-connection-editor nm-tray'

@@ -147,7 +147,7 @@ configure() {
 }
 
 install_base() {
-    pacstrap /mnt base base-devel grub efibootmgr linux-zen linux-firmware nano
+    pacstrap /mnt base base-devel grub efibootmgr linux-zen linux-firmware nano pipewire pipewire-pulse pipewire-jack wireplumber
 }
 
 unmount_filesystems() {
@@ -159,7 +159,7 @@ install_packages() {
     local packages=''
     
     # Essential packages
-    packages+=' aspell-en cpupower mlocate openssh p7zip pkgfile python3 python-pip rsync unrar unzip wget zsh git gparted zram-generator htop bash-completion'
+    packages+=' man-db aspell-en cpupower mlocate openssh p7zip pkgfile python3 python-pip rsync unrar unzip wget zsh git gparted zram-generator htop bash-completion iwd dhclient'
 
     # Development packages
 #    packages+=' cmake gdb git maven '
@@ -186,7 +186,7 @@ install_packages() {
     packages+=' xdg-desktop-portal-kde plasma plasma-wayland-session konsole dolphin dolphin-plugins packagekit-qt5 plasma-systemmonitor flatpak-kcm kdeplasma-addons bluedevil breeze breeze-gtk breeze-plymouth drkonqi flatpak-kcmkactivitymanagerd kde-cli-tools kde-gtk-config kdecoration kdeplasma-addons kgamma5 khotkeys kinfocenter kmenuedit kpipewire kscreen kscreenlocker ksshaskpass ksystemstats kwallet-pam kwayland-integration kwin  kwrited layer-shell-qt ibkscreen libksysguard  milou plasma-browser-integration plasma-desktop plasma-disks  plasma-firewall plasma-integration plasma-nm plasma-pa plasma-sdkplasma-thunderbolt plasma-vault plasma-welcome plasma-workspace plasma-workspace-wallpapers plymouth-kcm polkit-kde-agent powerdevil sddm-kcmsystemsettings'
 
     # Plasma apps
-    packages+=' gwenview akregator okular elisa spectable kfind krdc kamoso konversation kontact telepathy-morse'
+    packages+=' kate gwenview akregator okular elisa spectable kfind krdc kamoso konversation kontact telepathy-morse'
     
     # XFCE desktop
 #    packages+=' xfce xfce-goodies nm-connection-editor nm-tray'
@@ -329,7 +329,70 @@ clean_packages() {
 #grub_bootloader() {
 #    grub-install --target=x86_64-efi --bootloader-id="Striker's Arch Linux" --recheck
 #
-#    grub-mkconfig -o /boot/grub/grub.cfg
+#    cat >> /etc/default/grub 
+<< COMMENT
+GRUB_DEFAULT=0
+GRUB_TIMEOUT=5
+GRUB_DISTRIBUTOR="Arch"
+GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 quiet"
+GRUB_CMDLINE_LINUX=""
+
+# Preload both GPT and MBR modules so that they are not missed
+GRUB_PRELOAD_MODULES="part_gpt part_msdos"
+
+# Uncomment to enable booting from LUKS encrypted devices
+#GRUB_ENABLE_CRYPTODISK=y
+
+# Set to 'countdown' or 'hidden' to change timeout behavior,
+# press ESC key to display menu.
+GRUB_TIMEOUT_STYLE=menu
+
+# Uncomment to use basic console
+GRUB_TERMINAL_INPUT=console
+
+# Uncomment to disable graphical terminal
+#GRUB_TERMINAL_OUTPUT=console
+
+# The resolution used on graphical terminal
+# note that you can use only modes which your graphic card supports via VBE
+# you can see them in real GRUB with the command `videoinfo'
+GRUB_GFXMODE=auto
+
+# Uncomment to allow the kernel use the same resolution used by grub
+GRUB_GFXPAYLOAD_LINUX=keep
+
+# Uncomment if you want GRUB to pass to the Linux kernel the old parameter
+# format "root=/dev/xxx" instead of "root=/dev/disk/by-uuid/xxx"
+#GRUB_DISABLE_LINUX_UUID=true
+
+# Uncomment to disable generation of recovery mode menu entries
+GRUB_DISABLE_RECOVERY=true
+
+# Uncomment and set to the desired menu colors.  Used by normal and wallpaper
+# modes only.  Entries specified as foreground/background.
+#GRUB_COLOR_NORMAL="light-blue/black"
+#GRUB_COLOR_HIGHLIGHT="light-cyan/blue"
+
+# Uncomment one of them for the gfx desired, a image background or a gfxtheme
+#GRUB_BACKGROUND="/path/to/wallpaper"
+#GRUB_THEME="/path/to/gfxtheme"
+
+# Uncomment to get a beep at GRUB start
+#GRUB_INIT_TUNE="480 440 1"
+
+# Uncomment to make GRUB remember the last selection. This requires
+# setting 'GRUB_DEFAULT=saved' above.
+#GRUB_SAVEDEFAULT=true
+
+# Uncomment to disable submenus in boot menu
+#GRUB_DISABLE_SUBMENU=y
+
+# Probing for other operating systems is disabled for security reasons. Read
+# documentation on GRUB_DISABLE_OS_PROBER, if still want to enable this
+# functionality install os-prober and uncomment to detect and include other
+# operating systems.
+GRUB_DISABLE_OS_PROBER=false
+COMMENT
 #}
 
 set_hostname() {

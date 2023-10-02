@@ -61,15 +61,22 @@ WIRELESS_DEVICE="wlan0"
 # For tc4200's
 #WIRELESS_DEVICE="eth1"
 
-setup() {
+root_chroot() {
     echo 'Installing base system'
     install_base
 
     echo 'Chrooting into installed system to continue setup...'
-    cp $0 /mnt/setup.sh
-    arch-chroot /mnt ./setup.sh chroot
+    cp $0 /mnt/root_chroot.sh
+    arch-chroot /mnt ./root_chroot.sh chroot
+}
 
-    if [ -f /mnt/setup.sh ]
+user_chroot(){
+    exit
+    cp $0 /mnt/userchroot.sh
+    arch-chroot -u $USER_NAME /mnt ./userchroot.sh chroot
+
+    
+    if [ -f /mnt/root_chroot ]
     then
         echo 'ERROR: Something failed inside the chroot, not unmounting filesystems so you can investigate.'
         echo 'Make sure you unmount everything before you try to run this script again.'
@@ -79,12 +86,6 @@ setup() {
         echo 'Done! Reboot system.'
         #reboot
     fi
-}
-
-user_chroot(){
-    exit
-    cp $0 /mnt/userchroot.sh
-    arch-chroot -u $USER_NAME /mnt ./userchroot.sh chroot
 }
 
 configure() {
@@ -143,7 +144,7 @@ configure() {
     set_user_password "$USER_PASSWORD"
     create_user "$USER_NAME" "$USER_PASSWORD"
 
-    rm /setup.sh
+    rm /root_chroot
 }
 
 install_base() {
@@ -186,7 +187,7 @@ install_packages() {
     packages+=' xdg-desktop-portal-kde plasma plasma-wayland-session konsole dolphin dolphin-plugins packagekit-qt5 plasma-systemmonitor flatpak-kcm kdeplasma-addons bluedevil breeze breeze-gtk breeze-plymouth drkonqi flatpak-kcmkactivitymanagerd kde-cli-tools kde-gtk-config kdecoration kdeplasma-addons kgamma5 khotkeys kinfocenter kmenuedit kpipewire kscreen kscreenlocker ksshaskpass ksystemstats kwallet-pam kwayland-integration kwin  kwrited layer-shell-qt ibkscreen libksysguard  milou plasma-browser-integration plasma-desktop plasma-disks  plasma-firewall plasma-integration plasma-nm plasma-pa plasma-sdkplasma-thunderbolt plasma-vault plasma-welcome plasma-workspace plasma-workspace-wallpapers plymouth-kcm polkit-kde-agent powerdevil sddm-kcmsystemsettings'
 
     # Plasma apps
-    packages+=' kate gwenview akregator okular elisa spectable kfind krdc kamoso konversation kontact telepathy-morse'
+    packages+=' kate gwenview akregator okular elisa spectable kfind krdc kamoso konversation kontact telepathy-morse ark spectable'
     
     # XFCE desktop
 #    packages+=' xfce xfce-goodies nm-connection-editor nm-tray'
@@ -597,14 +598,14 @@ if [ "$1" == "chroot" ]
 then
     configure
 else
-    setup
+    root_chroot
 fi
 
 if [ "$1" == "user-chroot" ]
 then
     configure
 else
-    setup
+    user_chroot
 fi
 
 

@@ -600,6 +600,13 @@ else
     setup
 fi
 
+if [ "$1" == "user-chroot" ]
+then
+    configure
+else
+    setup
+fi
+
 
 
 

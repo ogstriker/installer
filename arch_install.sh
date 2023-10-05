@@ -160,7 +160,7 @@ install_packages() {
     local packages=''
     
     # Essential packages
-    packages+=' man-db aspell-en cpupower vlc mlocate firefox openssh p7zip pkgfile rsync unrar unzip wget zsh git gparted zram-generator htop bash-completion iwd dhclient fuse2 corectrl'
+    packages+=' man-db aspell-en cpupower vlc mlocate firefox openssh p7zip pkgfile rsync unrar unzip wget zsh git gparted zram-generator htop bash-completion iwd dhclient fuse2 corectrl ntfs-3g'
 
     # Development packages
 #    packages+=' cmake gdb git maven '
@@ -178,7 +178,7 @@ install_packages() {
 #    packages+=' libreoffice-fresh hunspell'
 
     # Misc programs
-#    packages+=' speech-dispatcher jdk8-openjdk unrar python3 python-pip qemu-desktop virt-manager zenity qbittorrent intellij-idea-community-edition ncdu webcord firejail telegram-desktop ntfs-3g noto-fonts-emoji kdenlive'
+#    packages+=' speech-dispatcher yt-dlp python3 python-pip qemu-desktop virt-manager zenity qbittorrent intellij-idea-community-edition ncdu webcord firejail telegram-deskto noto-fonts-emoji kdenlive'
 
     # Network and Security
 #    packages+=' tcpdump wireshark-qt whois macchanger binwalk keepassxc'

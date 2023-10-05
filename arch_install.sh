@@ -160,7 +160,7 @@ install_packages() {
     local packages=''
     
     # Essential packages
-    packages+=' man-db aspell-en cpupower mlocate openssh p7zip pkgfile python3 python-pip rsync unrar unzip wget zsh git gparted zram-generator htop bash-completion iwd dhclient'
+    packages+=' man-db aspell-en cpupower vlc mlocate firefox openssh p7zip pkgfile rsync unrar unzip wget zsh git gparted zram-generator htop bash-completion iwd dhclient fuse2 corectrl'
 
     # Development packages
 #    packages+=' cmake gdb git maven '
@@ -178,13 +178,13 @@ install_packages() {
 #    packages+=' libreoffice-fresh hunspell'
 
     # Misc programs
-#    packages+=' firefox speech-dispatcher vlc jdk8-openjdk unrar qemu-desktop virt-manager zenity qbittorrent corectrl intellij-idea-community-edition ncdu fuse2 discord firejail telegram-desktop ntfs-3g noto-fonts-emoji kdenlive'
+#    packages+=' speech-dispatcher jdk8-openjdk unrar python3 python-pip qemu-desktop virt-manager zenity qbittorrent intellij-idea-community-edition ncdu webcord firejail telegram-desktop ntfs-3g noto-fonts-emoji kdenlive'
 
     # Network and Security
 #    packages+=' tcpdump wireshark-qt whois macchanger binwalk keepassxc'
     
     # Plasma desktop
-    packages+=' xdg-desktop-portal-kde plasma plasma-wayland-session konsole dolphin dolphin-plugins packagekit-qt5 plasma-systemmonitor flatpak-kcm kdeplasma-addons bluedevil breeze breeze-gtk breeze-plymouth drkonqi flatpak-kcmkactivitymanagerd kde-cli-tools kde-gtk-config kdecoration kdeplasma-addons kgamma5 khotkeys kinfocenter kmenuedit kpipewire kscreen kscreenlocker ksshaskpass ksystemstats kwallet-pam kwayland-integration kwin  kwrited layer-shell-qt ibkscreen libksysguard  milou plasma-browser-integration plasma-desktop plasma-disks  plasma-firewall plasma-integration plasma-nm plasma-pa plasma-sdkplasma-thunderbolt plasma-vault plasma-welcome plasma-workspace plasma-workspace-wallpapers plymouth-kcm polkit-kde-agent powerdevil sddm-kcmsystemsettings'
+ #   packages+=' xdg-desktop-portal-kde plasma plasma-wayland-session konsole dolphin dolphin-plugins packagekit-qt5 plasma-systemmonitor flatpak-kcm kdeplasma-addons bluedevil breeze breeze-gtk breeze-plymouth drkonqi flatpak-kcmkactivitymanagerd kde-cli-tools kde-gtk-config kdecoration kdeplasma-addons kgamma5 khotkeys kinfocenter kmenuedit kpipewire kscreen kscreenlocker ksshaskpass ksystemstats kwallet-pam kwayland-integration kwin  kwrited layer-shell-qt ibkscreen libksysguard  milou plasma-browser-integration plasma-desktop plasma-disks  plasma-firewall plasma-integration plasma-nm plasma-pa plasma-sdkplasma-thunderbolt plasma-vault plasma-welcome plasma-workspace plasma-workspace-wallpapers plymouth-kcm polkit-kde-agent powerdevil sddm-kcmsystemsettings'
 
     # Plasma apps
     packages+=' kate gwenview akregator okular elisa spectable kfind krdc kamoso konversation kontact telepathy-morse ark spectable'
@@ -601,12 +601,12 @@ else
     root_chroot
 fi
 
-if [ "$1" == "user-chroot" ]
-then
-    configure
-else
-    user_chroot
-fi
+#if [ "$1" == "user-chroot" ]
+#then
+#    configure
+#else
+#    user_chroot
+#fi
 
 
 
@@ -616,24 +616,24 @@ fi
 
 
 
-#install_yay() {
-#    mkdir -p /foo
-#    cd /foo
-#    git clone https://aur.archlinux.org/yay.git
-#    cd yay
-#    makepkg -si --noconfirm
-#
-#    cd /
-#    rm -rf /foo
-#}
+install_yay() {
+    mkdir -p /foo
+    cd /foo
+    git clone https://aur.archlinux.org/yay.git
+    cd yay
+    makepkg -si --noconfirm
 
-#aur_packages() {
-#    mkdir /foo
-#    export TMPDIR=/foo
-#    yay -S --noconfirm lightly-git appimagelauncher q4wine-git protonup-qt-bin obs-studio heroic-games-launcher pamac-aur zulu-jdk-fx-bin detect-it-easy-bin vkbasalt lib32-vkbasalt mangohud-git lib32-mangohud-git goverlay-git
-#    unset TMPDIR
-#    rm -rf /foo
-#}
+    cd /
+    rm -rf /foo
+}
+
+aur_packages() {
+    mkdir /foo
+    export TMPDIR=/foo
+    yay -S --noconfirm lightly-git appimagelauncher q4wine-git protonup-qt-bin obs-studio heroic-games-launcher pamac-nosnap zulu-jdk-fx-bin detect-it-easy-bin vkbasalt lib32-vkbasalt mangohud-git lib32-mangohud-git goverlay-git
+    unset TMPDIR
+    rm -rf /foo
+}
 
 config_zsh(){
     wget --no-check-certificate http://install.ohmyz.sh -O - | sh

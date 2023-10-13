@@ -178,7 +178,7 @@ install_packages() {
 #    packages+=' libreoffice-fresh hunspell'
 
     # Misc programs
-#    packages+=' speech-dispatcher yt-dlp python3 python-pip qemu-desktop virt-manager zenity qbittorrent intellij-idea-community-edition ncdu webcord firejail telegram-deskto noto-fonts-emoji kdenlive'
+#    packages+=' speech-dispatcher ffmpeg yt-dlp python3 python-pip qemu-desktop virt-manager zenity qbittorrent intellij-idea-community-edition ncdu webcord firejail telegram-deskto noto-fonts-emoji kdenlive'
 
     # Network and Security
 #    packages+=' tcpdump wireshark-qt whois macchanger binwalk keepassxc'

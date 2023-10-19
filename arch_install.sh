@@ -465,7 +465,7 @@ swapspace(){
     ./configure && make && make install
     mv swapspace.service /etc/systemd/system
     systemctl enable swapspace
-    cd .. & rm -rf Swapspace/
+    cd .. && rm -rf Swapspace/
 }
 
 set_sudoers() {
